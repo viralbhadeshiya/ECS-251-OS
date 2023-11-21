@@ -1,4 +1,9 @@
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+uint32_t GetTicks(void);
+uint32_t GetController(void);
 
 volatile int global = 42;
 volatile uint32_t controller_status = 0;
@@ -7,8 +12,11 @@ volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
 int main() {
     int a = 4;
     int b = 12;
-    int last_global = 42;
+    uint32_t last_global = 42;
     int x_pos = 12;
+    // int countdown =1;
+    uint32_t global =42;
+    uint32_t controller_status =0;
 
     VIDEO_MEMORY[0] = 'H';
     VIDEO_MEMORY[1] = 'e';
@@ -27,7 +35,12 @@ int main() {
 
     while (1) {
         int c = a + b + global;
+        if (a == 11) {
+            b++;
+        }
+        global = GetTicks();
         if(global != last_global){
+            controller_status = GetController();
             if(controller_status){
                 VIDEO_MEMORY[x_pos] = ' ';
                 if(controller_status & 0x1){
